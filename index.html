@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Convertidor de YouTube</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: system-ui, sans-serif;
+      background: #f3f5f7;
+      color: #17212b;
+    }
+    body {
+      margin: 0;
+      padding: 2rem 1rem;
+    }
+    main {
+      box-sizing: border-box;
+      max-width: 38rem;
+      margin: 3rem auto;
+      padding: 2rem;
+      border-radius: 0.75rem;
+      background: white;
+      box-shadow: 0 0.5rem 2rem #17212b18;
+    }
+    h1 {
+      margin-top: 0;
+    }
+    label {
+      display: block;
+      margin: 1.25rem 0 0.4rem;
+      font-weight: 600;
+    }
+    input, select, button {
+      box-sizing: border-box;
+      width: 100%;
+      min-height: 2.8rem;
+      padding: 0.65rem 0.75rem;
+      border: 1px solid #aeb8c2;
+      border-radius: 0.4rem;
+      font: inherit;
+    }
+    button {
+      margin-top: 1.5rem;
+      border: 0;
+      background: #1769aa;
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #12558a;
+    }
+    .error {
+      padding: 0.8rem;
+      border-radius: 0.4rem;
+      background: #fff0ef;
+      color: #9c2018;
+    }
+    .help {
+      color: #526170;
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Convertidor de YouTube</h1>
+    <p class="help">Pega un enlace de un video que tengas derecho a descargar y elige el formato.</p>
+
+    {% if error %}
+      <p class="error" role="alert">{{ error }}</p>
+    {% endif %}
+
+    <form method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+      <label for="url">Enlace de YouTube</label>
+      <input
+        id="url"
+        name="url"
+        type="url"
+        value="{{ url }}"
+        placeholder="https://www.youtube.com/watch?v=..."
+        autocomplete="url"
+        required
+      >
+
+      <label for="formato">Formato</label>
+      <select id="formato" name="formato">
+        <option value="mp3" {% if formato == "mp3" %}selected{% endif %}>MP3</option>
+        <option value="mp4" {% if formato == "mp4" %}selected{% endif %}>MP4</option>
+      </select>
+
+      <button type="submit">Descargar</button>
+    </form>
+
+    <p class="help">MP3 requiere FFmpeg. Algunos videos también lo necesitan para generar MP4.</p>
+    <p class="help">Esta aplicación solo está disponible en esta computadora.</p>
+  </main>
+</body>
+</html>
