@@ -68,6 +68,9 @@
 <body>
   <main>
     <h1>Convertidor de YouTube</h1>
+    <div class="error" role="alert">
+      <strong>⚠️ Aviso legal:</strong> Solo descarga videos de los que tengas derechos de autor o que estén bajo licencia que lo permita.
+    </div>
     <p class="help">Pega un enlace de un video que tengas derecho a descargar y elige el formato.</p>
 
     {% if error %}
@@ -98,7 +101,7 @@
     </form>
 
     <p class="help">MP3 requiere FFmpeg. Algunos videos también lo necesitan para generar MP4.</p>
-    <p class="help">El navegador pedirá la contraseña para acceder.</p>
+    <p class="help">Pega solo videos que tengas derecho a descargar.</p>
   </main>
 </body>
 </html>
