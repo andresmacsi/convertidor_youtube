@@ -1,3 +1,4 @@
+import os
 import secrets
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -18,10 +19,51 @@ YOUTUBE_HOSTS = {
 }
 
 app = Flask(__name__)
-app.secret_key = secrets.token_bytes(32)
+app_environment = os.environ.get("APP_ENV", "development").lower()
+secret_key = os.environ.get("SECRET_KEY")
+app_password = os.environ.get("APP_PASSWORD")
+
+if app_environment == "production":
+    missing_secrets = [
+        name
+        for name, value in (("SECRET_KEY", secret_key), ("APP_PASSWORD", app_password))
+        if not value
+    ]
+    if missing_secrets:
+        raise RuntimeError(
+            "Faltan variables de entorno requeridas: " + ", ".join(missing_secrets)
+        )
+
+app.secret_key = secret_key or secrets.token_hex(32)
+app.config["APP_PASSWORD"] = app_password or ""
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+app.config["SESSION_COOKIE_SECURE"] = app_environment == "production"
+
+
+@app.before_request
+def exigir_contrasena():
+    password = app.config["APP_PASSWORD"]
+    if not password:
+        return None
+
+    authorization = request.authorization
+    if (
+        authorization is not None
+        and secrets.compare_digest(authorization.username or "", "convertidor")
+        and secrets.compare_digest(authorization.password or "", password)
+    ):
+        return None
+
+    return Response(
+        "Se requiere autenticación.",
+        401,
+        {
+            "WWW-Authenticate": 'Basic realm="Convertidor YouTube"',
+            "Cache-Control": "no-store",
+        },
+    )
 
 
 def es_url_youtube(url: str) -> bool:
