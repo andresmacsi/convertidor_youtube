@@ -16,16 +16,17 @@ Aplicación local para convertir videos a MP3 o MP4. Usa únicamente contenido q
 
 El servidor escucha solo en `127.0.0.1`; no está publicado en Internet. El archivo convertido se envía al navegador y los archivos temporales se eliminan al terminar la descarga.
 
-## Despliegue privado en Render
+## Despliegue público en Render
 
-El repositorio incluye `render.yaml` y `Dockerfile` para desplegar la aplicación en Render. El servicio pide autenticación HTTP Basic al abrirse: el usuario es `convertidor` y la contraseña se configura como secreto en Render, no en el código.
+El repositorio incluye `render.yaml` y `Dockerfile` para desplegar la aplicación en Render sin costo.
 
-1. Sube a GitHub los archivos de esta versión, incluido `render.yaml`, `Dockerfile` y `.dockerignore`.
-2. En Render, crea un **Blueprint** conectado al repositorio. Revisa el servicio `convertidor-youtube` y selecciona el plan que prefieras.
-3. Cuando Render solicite `APP_PASSWORD`, define una contraseña larga y única. `SECRET_KEY` se genera automáticamente.
-4. Despliega y abre la URL `https://...onrender.com`. El navegador pedirá las credenciales; ingresa el usuario `convertidor` y la contraseña configurada.
+1. Regístrate en [Render](https://render.com/) con GitHub.
+2. Crea un **Blueprint** conectado a este repositorio, rama `main`.
+3. Render leerá `render.yaml` y creará el servicio automáticamente.
+4. Cuando el servicio aparezca como **Live**, abre la URL que Render asigna (`https://...onrender.com`).
+5. Listo: cualquiera puede acceder desde Internet.
 
-No escribas la contraseña en el repositorio ni la compartas públicamente. La app y FFmpeg se instalan en el contenedor; Render termina HTTPS y reenvía las solicitudes al puerto del servicio.
+Nota: FFmpeg se instala en el contenedor. Las descargas son temporales y se limpian automáticamente.
 
 ## Aplicación de escritorio
 
